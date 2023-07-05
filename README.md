@@ -1,18 +1,18 @@
 # Currently Reading Books
 
-I am currently reading the following books in the mentioned sequence and will post cheatsheets for them here:
+I am currently reading the following books, and will post cheatsheets for them here:
 
-1. Building Microservices - rereading
-2. Designing Data-Intensive Applications - rereading
-3. High Performance Browser Networking - in progress
-4. Elements of Programming Interviews Python - in progress
+1. Building Microservices 
+2. Designing Data-Intensive Applications
+3. High-Performance Browser Networking
+4. Elements of Programming Interviews Python
 5. The Go Programming Language 
-6. The Rust Programming Language - in progress
+6. The Rust Programming Language 
 7. Rust by Example
-8. System Design Interview Book - in progress
+8. System Design Interview Book 
 9. Database Internals
 10. MongoDB: The Definitive Guide
-11. Fundamentals of Data Engineering - in progress
+11. Fundamentals of Data Engineering 
 12. Building Event-Driven Microservices 
 13. Kafka: The Definitive Guide
 14. Spark: The Definitive Guide
