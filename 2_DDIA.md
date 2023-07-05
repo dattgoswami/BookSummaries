@@ -384,12 +384,6 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
    - It will also discuss the fundamental limitations of distributed systems.
    - Part III will address how to integrate several datastores into a larger system to satisfy complex application needs.
 
-## References
-   - Understand the inner workings of memory management, as per Ulrich Drepper’s article.
-   - Review shared-disk versus shared-nothing architectures through Ben Stopford’s independent view.
-   - Read Michael Stonebraker’s paper on shared-nothing architecture.
-   - Frank McSherry, Michael Isard, and Derek G. Murray's paper on scalability discusses the cost of scaling.
-
 ## Application as a Software Engineer
    - Consider the data demands of your application and choose between vertical scaling and shared-nothing architecture based on cost, complexity, and future scalability.
    - Use replication and partitioning techniques to distribute data across multiple nodes for improved performance and redundancy.
