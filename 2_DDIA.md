@@ -494,3 +494,77 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
 
 This is a comprehensive summary of the concepts and strategies involved in data replication, which is a critical component in designing data-intensive applications. It serves as a reference guide for software engineers to understand and apply replication concepts effectively in their work.
 
+# Cheatsheet: Chapter 6 - Partitioning of Designing Data-Intensive Applications
+
+## What is Partitioning?
+- Partitioning, or sharding, involves breaking data into smaller chunks (partitions) and distributing them across multiple nodes in a database.
+- Each record belongs to exactly one partition.
+- A crucial technique for scalability as it enables the distribution of data and query load over multiple machines.
+- Often combined with replication to enhance fault tolerance and data availability.
+
+## Key Terminologies:
+- **Partition/Shard**: A subset of the database's data.
+- **Skew**: An imbalance where some partitions have more data or queries than others.
+- **Hot Spot**: A partition with a disproportionately high load.
+- **Rebalancing**: The process of moving data among nodes to maintain even distribution, especially when new nodes are added or existing nodes are removed.
+
+## Partitioning Strategies:
+1. **Partitioning by Key Range**:
+   - Assigns a continuous range of keys to each partition.
+   - Pros: Efficient for range scans.
+   - Cons: May lead to hot spots if the range is not distributed properly.
+   
+2. **Partitioning by Hash of Key**:
+   - Uses a hash function on keys to distribute data uniformly across partitions.
+   - Pros: Good for evenly distributing write load.
+   - Cons: Makes range queries inefficient.
+   
+3. **Directory-based Partitioning**:
+   - Maintains a directory of metadata to track which partition contains which set of keys.
+   - Pros: Flexibility in partitioning; partitions can be of different sizes and can be relocated.
+   - Cons: Directory can become a bottleneck or point of failure.
+
+4. **Partitioning Secondary Indexes by Document (Local Index)**:
+   - Each partition maintains its secondary indexes, covering only the documents in that partition.
+   - Pros: Simplifies writes.
+   - Cons: Makes reads more expensive (scatter/gather).
+   
+5. **Partitioning Secondary Indexes by Term (Global Index)**:
+   - Constructs a global index covering data in all partitions.
+   - Pros: More efficient reads.
+   - Cons: Slower, more complicated writes.
+
+6. **Dynamic Partitioning**:
+   - Adapts the number of partitions according to the total data volume.
+   - Suitable for both key-range and hash partitioning.
+   
+7. **Partitioning Proportional to Nodes**:
+   - The number of partitions is proportional to the number of nodes.
+   - Mostly relies on hash-based partitioning.
+
+## Rebalancing:
+- Necessary for load balancing especially when the dataset size increases or a machine fails.
+- Can be automatic (system-controlled) or manual (administrator-controlled).
+
+## Query Routing:
+- Mechanism to route client requests to the correct node.
+- Methods:
+   1. **Any Node Forwarding**: Clients contact any node; the node responds directly if it owns the required partition, otherwise, it forwards the request.
+   2. **Routing Tier**: Clients send requests to a routing tier that forwards them to the appropriate node.
+   3. **Client-Side Partition Awareness**: Clients are aware of partitioning and directly connect to the appropriate node.
+
+## Practical Tips:
+1. Choose a partitioning strategy that aligns with your data access patterns.
+2. Monitor partition sizes and loads for rebalancing needs.
+3. Be mindful of hot spots and design keys to avoid them.
+4. Understand how your database handles partitioning and query routing.
+5. When combining partitioning with replication, manage consistency and fault tolerance carefully.
+6. Use external coordination services (e.g., ZooKeeper) to keep track of cluster
+
+metadata.
+7. Be aware of consistency challenges in secondary indexes, especially in the presence of network partitions and failures.
+8. Decide between automatic and manual rebalancing based on the trade-offs. Automatic rebalancing is less labor-intensive but can be unpredictable, whereas manual rebalancing is more controlled but requires more effort.
+9. Design your system to scale horizontally by adding more nodes as needed.
+10. Evaluate the impact of partitioning strategies on both read and write operations, and optimize based on your application’s requirements.
+
+This is a brief and consolidated summary of partitioning concepts and strategies, which are essential in scaling databases for large datasets and high query loads. Use it as a reference guide while designing and managing partitioned systems in your role.
