@@ -1,6 +1,6 @@
-# Cheatsheet and Summary: Key Takeaways from Chapter 1 of Designing Data-Intensive Applications
+# Cheatsheet: Chapter 1 - Reliable, Scalable and Maintainable Applications of Designing Data-Intensive Applications
 
-Chapter 1 of "Designing Data-Intensive Applications" introduces the concept of data-intensive applications and focuses on their building blocks, design principles, and handling faults. As a software engineer, understanding these concepts is crucial for designing and building robust applications that can handle large amounts of data efficiently and reliably.
+This chapter introduces the concept of data-intensive applications and focuses on their building blocks, design principles, and handling faults. As a software engineer, understanding these concepts is crucial for designing and building robust applications that can handle large amounts of data efficiently and reliably.
 
 ## A. Understanding Data-Intensive Applications
 
@@ -79,7 +79,7 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
 - Consider using hardware redundancy and software fault-tolerance techniques to increase system reliability.
 - Stay updated with the latest tools and trends in data-intensive applications.
 
-# Cheatsheet: Data Models and Query Languages from Chapter 2 of "Designing Data-Intensive Applications"
+# Cheatsheet: Chapter 2 - Data Models and Query Languages of Designing Data-Intensive Applications
 
 ## A. Data Models
 
@@ -164,3 +164,188 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
 - **Gain Proficiency in Query Languages**: Know the query languages relevant to the data models you work with.
 - **Be Open to Hybrid Approaches**: Keep abreast of evolving data models and database systems.
 - **Evaluate Maintenance and Flexibility**: Consider the maintenance overhead and long-term flexibility of the chosen data model.
+
+# Cheatsheet: Chapter 3 - Storage and Retrieval of Designing Data-Intensive Applications
+
+## Key Concepts
+
+### 1. **Storage Engines**:
+- Storage engines dictate how databases store and retrieve data.
+- Understanding storage engines is crucial for selecting the right database and tuning performance.
+
+### 2. **Data Structures in Databases**:
+- Log-Structured and B-tree are common data structures used in storage engines.
+- Log-Structured storage appends data to a file, while B-trees keep key-value pairs sorted by key.
+
+### 3. **Log-Structured Storage**:
+- **Append-only logs**: Efficient for writes but requires indexes for efficient reads.
+- **Segmentation and Compaction**: Breaks logs into segments and periodically removes obsolete data.
+- **SSTables and LSM-Trees**: Combines sorted segments (SSTables) with in-memory balanced trees (memtables) for efficient writes and range queries.
+
+### 4. **B-Trees**:
+- **Widely used**: B-trees are standard for most relational and many non-relational databases.
+- **Sorting and Indexing**: Keeps data sorted by key and maintains an index for efficient lookups and range queries.
+- **Write-Ahead Log (WAL)**: Logs every modification before it’s applied to the B-tree for crash recovery.
+- **Optimizations**: Such as copy-on-write, abbreviating keys, sequential layout, and additional pointers can improve performance.
+
+### 5. **Hash Indexes**:
+- Use an in-memory hash map to keep track of the offset in the data file for each key.
+- Efficient for workloads with frequent updates but requires all keys to fit in memory.
+
+### 6. **Secondary Indexes**:
+- Essential for efficient joins and can be constructed from key-value indexes.
+- Can use either B-trees or log-structured indexes.
+
+### 7. **Multi-column and Fuzzy Indexes**:
+- **Multi-column indexes**: Combine several fields into one key for complex queries.
+- **Fuzzy Indexes**: Useful for searching similar keys or performing linguistic analysis (e.g., Lucene).
+
+### 8. **In-memory Databases**:
+- Store the entire dataset in memory for faster access.
+- Can still be durable with logs, snapshots, or replication.
+
+### 9. **Non-Volatile Memory (NVM)**:
+- Evolving technology that may impact future database and storage engine choices.
+
+### 10. **OLTP vs. OLAP**:
+- OLTP (Online Transaction Processing) is optimized for high volumes of small read/write transactions.
+- OLAP (Online Analytical Processing) is optimized for complex analytical queries over large datasets.
+
+### 11. **Data Warehousing**:
+- A specialized database optimized for analytics, usually with a separate schema and storage engine from OLTP systems.
+- Consider using a data warehouse to offload analytics workload from transactional systems.
+
+### 12. **Schemas for Analytics: Stars and Snowflakes**:
+- Star Schema: A fact table surrounded by dimension tables.
+- Snowflake Schema: Similar to Star Schema but with dimensions further normalized into sub-dimensions.
+
+### 13. **Column-Oriented Storage**:
+- Stores each column of data separately, facilitating better compression and faster query performance for analytical workloads.
+
+### 14. **Materialized Aggregates**:
+- Precompute and cache the results of aggregate queries in materialized views or data cubes for performance optimization.
+
+### 15. **Divergence Between OLTP Databases and Data Warehouses**:
+- OLTP databases and data warehouses are optimized for different query patterns, even though they might both offer SQL query interfaces.
+
+### 16. **Vectorized Processing**:
+- A technique for optimizing CPU cycle usage by operating on compressed column data in chunks.
+
+### 17. **Sort Order in Column Storage**:
+- Sorting rows in column storage creates long sequences of repeated values, helping in compression and optimizing queries targeting ranges/groups.
+
+### 18. **Performance Trade-Offs**:
+- Indexes speed up reads but can slow down writes. The choice and optimization should be based on the application's query patterns.
+
+## Practical Application for Software Engineers
+
+1. **Select the Appropriate Database and Storage Engine**: Choose a database system and storage engine that aligns with your application's primary needs (OLTP or OLAP).
+
+2. **Design Efficient Schemas**: Use star or snowflake schemas for analytics. Be aware of trade-offs between normalization and query performance.
+
+3. **Optimize Data Structures and Indexes**: Understand and optimize the data structures and indexes according to the query patterns and storage engine.
+
+4. **Balance Performance Trade-Offs**: Be conscious of the trade-offs between optimizing for writes and reads.
+
+5. **Use Materialized Aggregates for Analytics**: Implement materialized views or data cubes for faster query performance in analytical workloads.
+
+6. **Keep Abreast with Technology**: Monitor emerging storage technologies such as NVM, and assess their applicability.
+
+7. **Evaluate In-memory Options**: Evaluate the feasibility and benefits of in-memory databases for performance-critical applications.
+
+8. **Efficient ETL Processes**: Plan and optimize the Extract, Transform, Load (ETL) processes effectively for data migration.
+
+9. **Tuning for Performance**: Knowing storage internals is invaluable for performance tuning, schema design, and informed architectural decisions.
+
+10. **Scalability and Performance Considerations**: Ensure that the database and storage mechanisms are scalable and performant for your specific use case.
+
+11. **Be Prepared for Recovery**: Implement mechanisms like Write-Ahead Log (WAL) or snapshots to protect against data loss and ensure quick recovery in case of crashes.
+
+# Cheatsheet: Chapter 4 - Encoding and Evolution of Designing Data-Intensive Applications
+
+## Key Concepts
+
+### 1. Evolvability and Schema Changes:
+- Applications evolve over time, and systems must be built to adapt to changes, including modifying data storage for new fields or records.
+
+### 2. Backward and Forward Compatibility:
+- Backward compatibility: newer code can read data written by older code.
+- Forward compatibility: older code can read data written by newer code. It's harder to achieve than backward compatibility.
+
+### 3. Formats for Encoding Data:
+- Encoding translates in-memory representation (objects, structs) to a byte sequence (serialization), while decoding is the reverse process (deserialization).
+
+### 4. Encoding Formats:
+- Language-Specific: Convenient but tied to a specific language, may have security vulnerabilities, often inefficient, and not great for compatibility.
+- JSON, XML, CSV: Language-independent but have issues with ambiguity, optional schema support, and lack of binary strings support.
+- Binary Encoding Formats (MessagePack, Avro, Thrift, Protocol Buffers): More compact and efficient, often used with a schema.
+
+### 5. Schema Evolution:
+- Enables flexibility, ensures compatibility, and allows different parts of the system to evolve independently.
+
+### 6. Dataflow:
+- Data flows between processes via databases, service calls (REST and RPC), and asynchronous message passing including the use of message brokers like RabbitMQ, ActiveMQ, Apache Kafka, etc.
+- Message-Passing Communication is usually one-way and asynchronous.
+- Message brokers ensure messages are delivered to one or more consumers or subscribers and are used for decoupling, buffering, and ensuring message delivery even in the event of recipient unavailability.
+
+### 7. Distributed Actor Frameworks:
+- Extend the actor model for scaling across multiple nodes.
+- Encapsulate logic in actors with local state, communicating via asynchronous messages.
+- Transparently encodes messages for network communication.
+- Examples include Akka, Orleans, and Erlang OTP.
+- Attention to message encoding and schema changes for backward/forward compatibility is essential.
+
+### 8. Modes of Dataflow:
+- Databases: writer encodes data and reader decodes it.
+- RPC and REST APIs: client encodes a request, the server decodes the request and encodes a response, the client decodes the response.
+- Asynchronous message passing: nodes communicate by sending encoded messages, decoded by the recipient.
+
+## Practical Application for Software Engineers:
+
+### 1. Think Ahead:
+- Consider future evolvability and schema changes when designing data storage and schema. Plan for forward and backward compatibility.
+
+### 2. Choose Encoding Format Wisely:
+- Choose the right encoding format by considering compatibility, efficiency, and language constraints.
+
+### 3. Use Schemas:
+- Use explicit schemas, especially in binary encoding formats, for documentation and avoiding ambiguities.
+
+### 4. Be Cautious with Language-Specific Formats:
+- Avoid language-specific serialization for long-term storage.
+
+### 5. Test Compatibility:
+- Regularly test backward and forward compatibility.
+
+### 6. Handle Schema Evolution:
+- Assume that the schema will change, plan for it, and make prudent use of required and optional fields.
+
+### 7. Keep Data Transformations Simple:
+- Prefer simple, additive changes to data formats and avoid complex transformations.
+
+### 8. Be Mindful of Security:
+- Avoid formats that can instantiate arbitrary classes or execute code upon decoding.
+
+### 9. Understand Trade-offs:
+- Know the trade-offs of different encoding formats and choose wisely based on the use case.
+
+### 10. Handle Large Numbers and Nulls Carefully:
+- Be cautious with languages that don't handle large numbers well, and use union types to handle nulls where necessary.
+
+### 11. Document and Communicate:
+- Ensure schema changes are well-documented and communicated to stakeholders.
+
+### 12. Use Code Generation Tools:
+- Utilize tools provided by encoding formats like Thrift, Protocol Buffers, and Avro to produce classes in various languages.
+
+### 13. Handle Writer’s and Reader's Schemas:
+- Understand the importance of writer's and reader's schemas in Avro and ensure their availability during data decoding.
+
+### 14. Microservices and Service APIs:
+- Design services to be independently deployable and evolve without breaking compatibility. Ensure data encoding is compatible across versions in service APIs.
+
+### 15. Archival Storage:
+- Encode database snapshots or backups using the latest schema and consider column-oriented formats for analytics.
+
+### 16. Key Advice for Evolvability:
+- Choose data encodings and communication methods that support backward/forward compatibility. This ensures easier application evolution, frequent deployments, and no downtime during upgrades.
