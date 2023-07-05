@@ -349,3 +349,154 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
 
 ### 16. Key Advice for Evolvability:
 - Choose data encodings and communication methods that support backward/forward compatibility. This ensures easier application evolution, frequent deployments, and no downtime during upgrades.
+
+# Cheatsheet: Key Takeaways from Part II of Designing Data Intensive Applications
+
+## 1. Distributed Data Overview
+   - Distributing data across multiple machines can be essential for scalability, fault tolerance/high availability, and reducing latency.
+   
+## 2. Reasons for Distributing Data
+   - **Scalability**: Distribute data to handle a larger volume of data, read or write loads that single machines cannot handle.
+   - **Fault tolerance/high availability**: Use multiple machines to provide redundancy; if one fails, others can take over.
+   - **Latency**: Locate servers close to users globally to reduce data travel time and improve performance.
+
+## 3. Approaches to Scaling
+   - **Vertical Scaling (Scaling Up)**: Increase the power of a single machine (CPUs, RAM, disk capacity). Limitations include higher cost and limited fault tolerance.
+   - **Shared-Disk Architecture**: Uses several machines with independent CPUs and RAM, but the data is stored on an array of shared disks. This approach has limitations due to contention and overhead of locking.
+   - **Shared-Nothing Architecture (Horizontal Scaling or Scaling Out)**: Each machine (node) operates independently, using its CPUs, RAM, and disks. Coordination between nodes is achieved at the software level.
+   
+## 4. Shared-Nothing Architecture
+   - This approach doesn't require special hardware and is well-suited for cloud deployments and distributing data across multiple geographic regions.
+   - Although powerful, it adds complexity and can sometimes limit data model expressiveness.
+   
+## 5. Techniques for Distributing Data
+   - **Replication**: Keep copies of the same data on different nodes, potentially in different locations. This adds redundancy and can improve performance.
+   - **Partitioning (Sharding)**: Split a large database into smaller subsets called partitions, which can be assigned to different nodes.
+   - Replication and partitioning are separate but often used together.
+
+## 6. Considerations in Distributed Systems
+   - Developers need to be aware of the constraints and trade-offs in distributed systems.
+   - Distributed shared-nothing architecture often requires careful planning and considerations for application complexity.
+   - Distributed systems involve difficult trade-offs and understanding transactions and potential issues is critical.
+
+## 7. What to Expect Next
+   - The book will discuss transactions to understand the various issues in data systems.
+   - It will also discuss the fundamental limitations of distributed systems.
+   - Part III will address how to integrate several datastores into a larger system to satisfy complex application needs.
+
+## References
+   - Understand the inner workings of memory management, as per Ulrich Drepper’s article.
+   - Review shared-disk versus shared-nothing architectures through Ben Stopford’s independent view.
+   - Read Michael Stonebraker’s paper on shared-nothing architecture.
+   - Frank McSherry, Michael Isard, and Derek G. Murray's paper on scalability discusses the cost of scaling.
+
+## Application as a Software Engineer
+   - Consider the data demands of your application and choose between vertical scaling and shared-nothing architecture based on cost, complexity, and future scalability.
+   - Use replication and partitioning techniques to distribute data across multiple nodes for improved performance and redundancy.
+   - Be aware of the complexity added by distributed systems and make informed trade-offs.
+   - Continuously reassess the scalability and fault tolerance of your application as it evolves and grows.
+
+# Cheatsheet: Chapter 5 - Replication of Designing Data-Intensive Applications
+
+## Introduction
+- Replication is keeping a copy of the same data on multiple machines connected via a network.
+- It's used to reduce latency, increase availability, and improve read throughput.
+
+## Why Replicate Data?
+1. Reduce latency by keeping data geographically closer to users.
+2. Increase availability by allowing the system to continue working even if some parts fail.
+3. Increase read throughput by scaling out the number of machines that can serve read queries.
+
+## Challenges in Replication
+- Handling changes in replicated data is challenging.
+- Replication lag and eventual consistency issues.
+- Handling leader failure in leader-based replication.
+- Managing cross-device consistency and read-after-write consistency.
+
+## Replication Strategies
+
+### Single-leader Replication
+- One replica is designated as the leader. Writes must be sent to the leader. The other replicas are followers.
+
+### Multi-leader Replication
+- More than one replica can accept write requests.
+- Allows for writes in multiple data centers, increasing fault-tolerance.
+- Requires mechanisms for handling conflicts due to concurrent writes.
+- In multi-leader configuration, the order of writes isn't well defined. Replicas must converge towards a consistent state.
+- Multi-leader replication tools often support custom conflict resolution logic embedded in the application code.
+
+#### Multi-leader Replication Topologies
+1. **All-to-All**: Every leader sends its writes to every other leader.
+2. **Circular**: A single flow of data changes as each node receives and forwards writes.
+3. **Star Topology**: One root node forwards writes to all other nodes.
+
+- More densely connected topologies are more fault-tolerant but might lead to network congestion or out-of-order arrival of writes.
+
+### Leaderless Replication
+- Writes are sent to multiple replicas, and there's no designated leader.
+- The system can continue processing writes even when a node is down.
+- Quorum-based reads and writes can detect and handle stale data.
+- Replication strategies such as read repair and anti-entropy processes help maintain consistency across replicas.
+- Sloppy quorums improve availability during network partitions, at the cost of potentially reading stale data.
+- Hinted handoff helps maintain durability of writes during network partitions.
+
+## Synchronous vs. Asynchronous Replication
+- **Synchronous Replication**: Leader waits until at least one follower has written the data.
+- **Asynchronous Replication**: Leader sends the data and doesn’t wait for followers.
+- **Semi-synchronous Replication**: A hybrid approach, usually with one follower being synchronous and others asynchronous.
+
+## Handling Failures
+- **Follower Failure**: Each follower keeps a log of data changes it received from the leader. It recovers by applying data changes from its log.
+- **Leader Failure (Failover)**: A follower must be promoted to be the new leader.
+
+## Replication Logs Implementation
+1. **Statement-Based Replication**: The leader logs every write request and sends them to followers.
+2. **Write-Ahead Log (WAL) Shipping**: The leader sends its write-ahead logs to followers.
+3. **Trigger-Based Replication**: Using triggers to log changes to a separate table that an external process can read and replicate to another system.
+
+## Conflict Resolution Strategies
+1. **Last Write Wins (LWW)**: Uses unique IDs for each write (timestamps, UUIDs, etc.), and the write with the highest ID wins.
+2. **Dependent on Replica ID**: Conflictsare resolved in favor of the write from the higher-numbered replica.
+3. **Merging**: Deterministically merges conflicting values.
+4. **Explicit Conflict Recording**: Detects and records conflicts for later resolution by application code.
+
+## Custom Conflict Resolution Logic
+1. This logic can be invoked either upon writing (when conflict is detected) or upon reading (resolve and write back the result on next read).
+
+## Automatic Conflict Resolution
+1. **CRDTs (Conflict-free Replicated Data Types)**: Data structures that automatically resolve conflicts sensibly upon concurrent editing.
+2. **Mergeable Persistent Data Structures**: Tracks history explicitly and uses three-way merge functions to resolve conflicts.
+3. **Operational Transformation**: Algorithm used in collaborative editing applications to resolve conflicts during real-time editing.
+
+## Read-After-Write Consistency
+- Ensuring users see the data they have just written.
+- Possible solutions:
+  - Read user-modifiable data from the leader and other data from followers.
+  - Track the time of the last update and temporarily read from the leader after an update.
+  - The client remembers the timestamp of its recent write; the system ensures the replica serving the reads is up-to-date.
+
+## Monotonic Reads
+- Ensuring a user does not read outdated data after having seen newer data.
+- Solutions include always reading from the same replica or ensuring that replicas accessed by a user are synchronized to a point in time.
+
+## Implications for Software Engineers
+1. Choose the appropriate replication strategy based on application requirements.
+2. Synchronous replication for critical data consistency, asynchronous for performance-sensitive applications.
+3. Be aware of challenges during failover and handle them diligently.
+4. Implement mechanisms for read-after-write consistency.
+5. Monitor system health and have alerts for timely intervention in case of failures.
+6. Keep an eye on the latest research and available tools for replication to potentially incorporate better solutions as they become available.
+7. Be mindful of replication lag and eventual consistency and design your application accordingly.
+8. Consider manual intervention in critical failover scenarios to avoid data corruption or loss.
+9. In geographically distributed systems, asynchronous replication is often more practical.
+10. In multi-datacenter setups, think about how you will handle routing to maintain consistency across devices.
+11. Maintain monotonic reads by ensuring that a user does not read outdated data after having seen newer data.
+
+## Real-world Applications and Tools
+- Databases like PostgreSQL, MySQL, and MongoDB employ replication strategies.
+- Distributed message brokers like Kafka and RabbitMQ.
+- Chain Replication is used in some systems like Microsoft Azure Storage.
+- Tools for Trigger-Based Replication: Databus for Oracle, Bucardo for Postgres.
+
+This is a comprehensive summary of the concepts and strategies involved in data replication, which is a critical component in designing data-intensive applications. It serves as a reference guide for software engineers to understand and apply replication concepts effectively in their work.
+
