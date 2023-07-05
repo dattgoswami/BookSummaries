@@ -13,7 +13,7 @@ I am currently reading the following books in the mentioned sequence and will po
 9. Database Internals
 10. MongoDB: The Definitive Guide
 11. Fundamentals of Data Engineering - in progress
-12. Building Event-Driven Microservices - rereading
+12. Building Event-Driven Microservices 
 13. Kafka: The Definitive Guide
 14. Spark: The Definitive Guide
 15. Stream Processing with Flink
