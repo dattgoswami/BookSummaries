@@ -559,9 +559,7 @@ This is a comprehensive summary of the concepts and strategies involved in data 
 3. Be mindful of hot spots and design keys to avoid them.
 4. Understand how your database handles partitioning and query routing.
 5. When combining partitioning with replication, manage consistency and fault tolerance carefully.
-6. Use external coordination services (e.g., ZooKeeper) to keep track of cluster
-
-metadata.
+6. Use external coordination services (e.g., ZooKeeper) to keep track of cluster metadata.
 7. Be aware of consistency challenges in secondary indexes, especially in the presence of network partitions and failures.
 8. Decide between automatic and manual rebalancing based on the trade-offs. Automatic rebalancing is less labor-intensive but can be unpredictable, whereas manual rebalancing is more controlled but requires more effort.
 9. Design your system to scale horizontally by adding more nodes as needed.
