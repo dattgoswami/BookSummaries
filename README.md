@@ -28,3 +28,9 @@ I am currently reading the following books, and will post cheatsheets for them h
 24. Monolith to Microservices
 25. Infrastructure as Code
 26. Graph-Powered Machine Learning
+27. Kubernetes Patterns
+28. Cloud Native DevOps with Kubernetes
+29. Reinforcement Learning
+30. Deep Learning with Python
+31. Deep Learning with PyTorch
+32. Deep Learning

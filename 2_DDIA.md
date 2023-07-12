@@ -148,7 +148,7 @@ This chapter sets the stage for the rest of the book, which dives deeper into th
 - Rules-based, defines new predicates based on data or other rules.
 - Powerful for complex queries due to combinability and reusability of rules.
 
-### 7. MapReduce (MongoDB)
+### 7. MapReduce 
 - Processes and generates aggregate data sets.
 - Map function emits key-value pairs for each document.
 - Reduce function takes values with the same key and reduces them to a single value.
@@ -645,7 +645,7 @@ This is a brief and consolidated summary of partitioning concepts and strategies
 
 Remember that absolute guarantees do not exist, so it’s essential to understand the limitations and risks in your chosen data storage and transaction strategy. Also, always monitor and test your application under realistic workloads to validate your transaction handling strategies.
 
-# Cheatsheet: Chapter 8 The Trouble with Distributed Systems of Designing Data-Intensive Applications
+# Cheatsheet: Chapter 8 - The Trouble with Distributed Systems of Designing Data-Intensive Applications
 
 ## A. Understanding Distributed Systems
 - Distributed systems are complex due to factors such as network latency, hardware failures, and clock discrepancies.
@@ -712,3 +712,386 @@ Remember that absolute guarantees do not exist, so it’s essential to understan
 21. **Leverage Distributed Systems for Fault Tolerance and Low Latency**: Use distributed systems not just for scalability but also to achieve fault tolerance and low latency by geographically distributing data closer to users.
 
 Remember that the challenges of distributed systems are rooted in unreliable networks, unreliable clocks, and the uncertainty of system state. Design your systems with these challenges in mind and implement strategies to handle the inherent complexities of distributed environments.
+
+# Cheatsheet: Chapter 9 - Consistency and Consensus of Designing Data-Intensive Applications
+
+## A. Overview
+This chapter is essential for software engineers working with distributed systems, as it explores the challenges and solutions for achieving consistency and consensus among distributed nodes.
+
+## B. Key Concepts
+
+### 1. Fault Tolerance in Distributed Systems
+Distributed systems are prone to network delays, packet loss, and node failures. To counter these challenges, it's essential to build abstractions with useful guarantees.
+
+### 2. Sequence Numbers and Timestamps
+- **Generating Sequence Numbers**: Create unique, approximately increasing sequence numbers for each operation.
+- **Lamport Timestamps**: Use a pair of (counter, node ID) to capture causality.
+- **Physical Clocks**: Note that physical clocks are unreliable for capturing causality due to potential clock skew.
+
+### 3. Consensus in Distributed Systems
+Nodes must agree on values, which is crucial for preventing issues like "split-brain".
+- **Consensus Algorithms**: Paxos, Raft, Viewstamped Replication (VSR), and Zab are popular consensus algorithms.
+- **FLP Result**: Consensus is challenging; no algorithm can always achieve consensus if a node crash is possible in an asynchronous system.
+- **Epoch Numbering and Quorums**: Used to guarantee unique leaders and make decisions with majority votes.
+
+### 4. Consistency Models
+Different consistency models exist; understanding your system's requirements is crucial for selecting the appropriate model.
+- **Linearizability (Strong Consistency)**: Ensures that operations are atomic and instant.
+- **Causal Consistency**: Maintains logical ordering based on causal relationships.
+- **Difference between Linearizability and Serializability**:
+    - *Linearizability*: Focuses on recency for a single object.
+    - *Serializability*: Ensures transactions involving multiple objects are executed serially.
+    - *Strict Serializability* combines both.
+
+### 5. Distributed Transactions
+Ensure that operations across multiple nodes either all succeed or all fail.
+- **Two-Phase Commit (2PC)**: Coordinator and participants agree in two phases - prepare phase and commit/abort phase.
+- **Three-Phase Commit (3PC)**: An alternative to 2PC; non-blocking but assumes bounded network delay.
+- **Handling In-doubt Transactions**: Monitor transactions with unknown outcomes that hold locks.
+
+### 6. Total Order vs. Partial Order
+- **Total Order**: All operations can be compared in sequence.
+- **Partial Order**: Some operations are incomparable. Causality implies partial order while linearizability implies total order.
+
+### 7. Coordination Services
+Examples: ZooKeeper, etcd. They maintain small amounts of data in memory and replicate it using fault-tolerant algorithms, providing linearizable atomic operations, total ordering of operations, failure detection, and change notifications.
+
+### 8. CAP Theorem
+In the presence of a network partition, a system must choose between consistency and availability.
+
+## C. Practical Applications for Software Engineers
+
+1. **Trade-offs**: Understand and evaluate the trade-offs between consistency models.
+
+2. **Fault Tolerance**: Implement consensus algorithms like Paxos or Raft for fault-tolerant consensus in distributed systems.
+
+3. **Coordination Services**: Utilize services like ZooKeeper or etcd for managing configuration, synchronization, and group services.
+
+4. **Efficient Consensus Algorithms**: Consider Zab (ZooKeeper) and Raft (etcd) for more efficient consensus compared to 2PC.
+
+5. **Monitoring Causal Dependencies**: Keep track of operations order using version vectors or logical clocks.
+
+6. **Use Compare-and-set**: This operation can be used for concurrency control by changing a value only if it hasn't been modified by someone else in the meantime.
+
+7. **Scalability and Reliability**: Design your systems to be scalable and reliable by understanding the complexities of distributed transactions.
+
+8. **Automation and Monitoring**: Automate leader election and failover mechanisms where possible and actively monitor the system's health.
+
+9. **Prepare for Recovery**: Have documentation and procedures for manual recovery in cases where transactions cannot be automatically resolved.
+
+10. **Understand System Constraints and Specific Needs**: Know both the theoretical and practical limitations of distributed systems for making informed architectural decisions.
+
+11. **Cost of Linearizability**: Weigh the performance issues and higher latencies of achieving linearizability against the need for strong consistency.
+
+This cheatsheet serves as a comprehensive guide to understanding and applying the concepts of consistency and consensus in distributed systems, which are crucial for designing fault-tolerant and reliable applications.
+
+# Cheatsheet: Chapter 10 - Batch Processing of Designing Data-Intensive Applications
+
+## A. Overview
+
+Batch processing is fundamental for large-scale data processing and is essential for creating scalable and maintainable applications. In this chapter, we explore the various tools, methodologies, and best practices that are pivotal for effective batch processing.
+
+## B. Key Concepts
+
+1. **Types of Data Processing Systems**
+   - **Online Systems**: Respond to client requests, focusing on low latency.
+   - **Batch Processing Systems**: Process large datasets in a single batch, not tied to user interaction; focus on high throughput.
+   - **Stream Processing Systems**: Similar to batch processing but operates on data shortly after it arrives.
+
+2. **Batch Processing Importance**: Batch processing is the foundation for large-scale data processing and is an essential aspect of creating scalable and maintainable applications.
+
+3. **Unix Philosophy and Tools for Batch Processing**
+   - **Unix Philosophy**: Make each program do one thing well and expect the output of one to be the input of another. Keep software modular and composable.
+   - **Uniform Interface**: Unix tools use a simple interface, treating files as byte sequences, which is crucial for composability.
+   - **Tools like awk, sed, grep, sort, uniq, and xargs**: Can process large files efficiently by chaining commands in pipelines.
+
+4. **Distributed Filesystems and Shared-nothing Architectures**
+    - **Hadoop Distributed File System (HDFS)**: A distributed file system that allows the disk storage of each machine in a cluster to be part of a larger file system, typically used with MapReduce.
+    - **Shared-nothing Distributed Systems**: Systems like HDFS don’t share memory or disk storage between nodes, allowing for horizontal scaling on commodity hardware.
+
+5. **MapReduce and Distributed Data Processing**
+    - **MapReduce**: A batch processing model for large-scale processing on commodity hardware that divides processing into two stages: Map and Reduce.
+    - **Local Computation**: Keep computation local to one machine by placing a copy of necessary databases in the same distributed filesystem as the input data.
+    - **Joins and Grouping**: Perform joins (sort-merge joins) and group records using MapReduce, ensuring that computation and data transfer are optimized.
+    - **Handling Skew**: Address data skew with methods like skewed join in Pig or Hive.
+    - **Map-side Joins**: Perform join logic in the mappers without the need for reducers or sorting.
+    - **Broadcast Hash Joins**: Use this when joining a large dataset with a small dataset that can fit in memory.
+    - **Reduce-Side Joins and Grouping**: MapReduce performs joins by grouping records with the same key in the reduce phase.
+    - **Reusability and Separation of Concerns**: Separate logic from configuration in MapReduce jobs.
+    - **Designing for Fault Tolerance**: Design your batch processing system to handle task failures gracefully.
+    - **Resource Allocation in Mixed-Use Data Centers**: Implement resource allocations and prioritizations for efficient utilization of resources in environments where batch jobs and online services coexist.
+    - **Building Search Indexes with MapReduce**: Use MapReduce to build search indexes efficiently, particularly effective for building indexes for Lucene/Solr.
+    - **Key-Value Stores as Batch Process Output**: Commonly used for machine learning systems, build a new database inside the batch job and write it as files to the job’s output directory in the distributed filesystem.
+    - **Philosophy of Batch Process Outputs**: Treat inputs as immutable and ensure outputs replace any previous output without side effects.
+    - **Avoid Writing Directly to External Databases in MapReduce Jobs**: Write output files that can be loaded in bulk to the database.
+
+6. **Handling Data in Memory and on Disk**
+    - **In-Memory Aggregation vs. Sorting**: Use in-memory aggregation with hash tables for small working sets; for large datasets, sorting is more feasible.
+
+7. **Modularity and Maintainability**
+    - **Logic and Wiring Separation**: Separate core program logic from input/output for better maintainability and flexibility.
+    - **Transparency and Experimentation**: Treat input data as immutable, allowing for experimentation without loss. Design systems for easy inspection at each stage.
+    
+## C. Batch Processing Essentials
+
+1. **Batch Processing Frameworks and Dataflow Engines**
+   - **Batch Processing Frameworks**: Used for large-scale data processing. Examples include MapReduce, Spark, Flink, and Tez.
+   - **MapReduce**: Google's model focused on fault tolerance. However, it has limitations such as forced sorting and full materialization of intermediate states.
+   - **Dataflow Engines**: Address MapReduce limitations by processing workflows as one job, supporting more flexible workflows, improved performance, and optimized resource utilization.
+   - **High-Level Abstractions for MapReduce**: Use high-level abstractions like Pig, Hive, Cascading, and Crunch to simplify MapReduce programming.
+   - **Pregel Model**: Consider using the Pregel model for processing graph data, which is based on the Bulk Synchronous Parallel (BSP) model.
+
+2. **Data Partitioning**
+   - **Partitioning Strategies**: Efficient partitioning strategies are vital in batch processing for distributing data across nodes for parallel processing.
+
+3. **Fault Tolerance in Batch Processing**
+   - **MapReduce**: Fault tolerance is achieved by frequently writing data to disk, which allows for easy recovery but leads to slower processing.
+   - **Dataflow Engines**: Keep data in memory for faster processing, but require more data recomputation in case of failure.
+
+4. **Determinism in Data Processing**
+   - **Deterministic Operations**: Ensure that operations in data processing are deterministic to facilitate fault tolerance.
+
+5. **Join Algorithms in Batch Processing**
+   - **Understanding Join Algorithms**: Learn about different join algorithms such as sort-merge joins, broadcast hash joins, and partitioned hash joins, and use them appropriately based on data size and structure.
+
+6. **Immutable Inputs and Derived Outputs**
+   - **Data Handling in Batch Jobs**: Batch jobs typically read from immutable input data and produce derived outputs.
+
+7. **Transitioning from Batch to Stream Processing**
+   - **Choosing the Right Processing Type**: Batch processing is used for bounded data. For unbounded data, consider transitioning to stream processing frameworks.
+
+## D. Practical Applications for Software Engineers
+
+1. **Choosing the Right Tools and Techniques**
+    - **Evaluate Data Characteristics**: Assess data volume, structure, and processing requirements to select an appropriate processing model.
+    - **Choose the Right Processing Model**: Consider MapReduce for extremely large datasets, and Dataflow engines like Spark for complex tasks.
+    - **Optimize Partitioning and Resource Utilization**: Choose an efficient data partitioning strategy and manage resources effectively for reduced execution time.
+    - **Utilize Unix Tools for Simple Tasks**: For processing text data or logs, Unix tools are often efficient and powerful.
+    - **Utilize High-Level Abstractions and Declarative Queries**: Reduce development time and complexity by using high-level abstractions and declarative query languages.
+
+2. **Design Principles and Philosophies**
+    - **Follow the Unix Philosophy**: Keep your code modular, focused, and composable for better maintainability and flexibility.
+    - **Uniform Interfaces**: Establish uniform interfaces in tools or services for seamless integration.
+    - **Separate Core Logic from I/O**: Make your code easier to test and more flexible by separating core logic from input/output.
+    - **Philosophy of Batch Process Outputs**: Treat inputs as immutable and ensure outputs replace any previous output without side effects.
+
+3. **Memory and Resource Management**
+    - **Mind Memory Constraints**: Be aware of memory constraints and choose between in-memory aggregation or sorting based on dataset size.
+    - **Resource Allocation in Mixed-Use Environments**: Allocate resources properly in environments where batch jobs and online services coexist.
+
+4. **Fault Tolerance and Reliability**
+    - **Design for Fault Tolerance**: Ensure your systems are resilient against failures and have proper recovery mechanisms.
+    - **Handle Fault Tolerance Efficiently**: Configure fault tolerance mechanisms properly, especially in distributed environments. Keep determinism in mind.
+    - **Understand Processing Semantics**: Be aware of how your batch processing framework handles state and ensures consistent outputs in the presence of faults.
+
+5. **Optimization Techniques**
+    - **Efficiently Utilize MapReduce**: Understand techniques within MapReduce such as joins, handling skew, and performance optimization.
+    - **Leverage Dataflow Engines for Pipelining**: Use dataflow engines for efficient pipelined execution to avoid unnecessary materialization and forced sorting.
+    - **Cost-Based Query Optimization**: Keep abreast of advancements in query optimization techniques and ensure your tools leverage these features.
+
+6. **Specialized Processing Models**
+    - **Graph Processing**: For complex algorithms, use specialized processing models like Pregel for graph data.
+    - **Evaluate Single Machine vs. Distributed Processing for Graphs**: Consider using single-machine processing if the data can fit into memory or disk, as it might perform better than a distributed approach due to less communication overhead.
+
+7. **Batch Processing Applications and Outputs**
+    - **Batch Processing for Large Datasets**: Utilize batch processing for heavy processing jobs that don’t require real-time user interaction.
+    - **Build Search Indexes with MapReduce**: Learn how to efficiently use MapReduce to build search indexes for tools like Lucene/Solr.
+    - **Batch Process Output Management**: Understand best practices for managing outputs in batch processing, including the use of key-value stores.
+
+8. **Transitioning to Real-time Processing**
+    - **Mind the Transition to Stream Processing**: If dealing with unbounded data sources or real-time processing requirements, consider transitioning from batch processing to stream processing frameworks.
+
+9. **Integration and Scalability**
+    - **Understand and Apply Shared-Nothing Architecture**: For scalability and cost-effectiveness in distributed systems, consider a shared-nothing architecture.
+    - **Integrate with the Hadoop Ecosystem**: Understand how different tools within the Hadoop ecosystem can be leveraged for diverse data processing needs.
+
+## E. Conclusion
+
+Batch processing is a powerful technique for processing large volumes of data efficiently. By understanding the key concepts and best practices outlined in this cheatsheet, software engineers can make more informed decisions when developing and maintaining batch processing systems.
+
+#  Cheatsheet: Chapter 11 - Stream Processing of Designing Data-Intensive Applications
+
+## A. Event Processing
+
+### Batch vs Stream Processing
+- Batch processing deals with finite, bounded inputs, while stream processing handles data that incrementally arrives over time.
+- Stream processing is beneficial for real-time updates and time-sensitive data.
+
+### Event Streams
+- An event is a small, immutable object detailing an occurrence at a specific time. Event streams are managed by producers and processed by consumers.
+
+### Transmitting Event Streams
+- Technologies like direct network communication and message brokers facilitate the transfer of event streams. The choice of technology can impact the system's performance and fault tolerance.
+
+## B. Message Systems
+
+### Message Brokers vs Databases
+- Message brokers delete a message post successful delivery, whereas databases keep data until explicitly deleted.
+- Databases support secondary indexes and data searching while message brokers support subscribing to a subset of topics.
+
+### Message Systems
+- Message systems notify consumers about new events. Their configuration and operational models affect their response to high message loads and node failures.
+
+### Messaging Patterns
+- Load balancing delivers each message to one of the consumers to share processing work.
+- Fan-out delivers each message to all consumers, enabling multiple independent consumers to receive the same message broadcast.
+
+## C. Logs and Offsets
+- Offsets and log sequence numbers help manage node failures and avoid data reprocessing.
+- Effective log management prevents data loss due to deleted segments.
+
+## D. Dealing with High Volumes of Data
+- Strategies to handle situations where consumers can't keep up with message production include dropping messages, buffering, or applying backpressure.
+- Consuming messages in log-based message brokers is a read-only operation, enabling easy reprocessing and experimentation.
+- Tools like LinkedIn's Databus, Facebook's Wormhole, and Yahoo's Sherpa can handle CDC at a large scale. 
+
+## E. Database and Streams
+- Database write operations can be treated as events that can be stored and processed, helping keep different systems in sync.
+- Databases are increasingly supporting change streams as a first-class interface.
+- Seeing writes to a database as a stream of changes allows for efficient updating of derived data systems.
+- Avoid dual writes to prevent race conditions and inconsistent states across systems.
+
+## F. Change Data Capture (CDC)
+- CDC involves observing all data changes written to a database and replicating them to other systems.
+- Initial snapshots of the database correspond to a known position in the change log, necessary for some CDC tools.
+- Schema changes can affect the structure of the data being captured in CDC, and each tool has a unique way to handle this.
+- Asynchronous CDC systems can face potential issues with replication lag. If a consumer is slow, it might lag behind the leader.
+
+## G. Log Compaction and Event Sourcing
+- Log compaction discards duplicates and keeps only the most recent update for each key, reducing disk space requirements.
+- Event sourcing stores all changes to application state as a log of change events. This assists in application evolution and debugging.
+
+## H. Derived Data Systems
+- Derived data systems are other views onto the data in the system of record. CDC ensures these derived systems have an accurate data copy.
+
+## I. Benefits of Immutable Events
+- Immutable events allow for easy evolution of applications, easier debugging, and guard against application bugs.
+- A consistent snapshot, corresponding to a known position in the change log, is needed if keeping all changes forever isn't feasible.
+
+## J. Key Takeaways
+
+1. **Event Sourcing:** Capturing all changes to the application state as a sequence of events.
+2. **Immutability:** Data is append-only, not mutable. This is a powerful tool for event sourcing and change data capture.
+3. **Database as Caches:** The event log is the system of record, and any mutable state is derived from it.
+4. **Command Query Responsibility Segregation (CQRS):** It separates the form in which data is written from the form it is read, enabling creation of multiple read-optimized views from the same event log.
+5. **Concurrency Control:** By deriving the current state from an event log, it allows creating self-contained events that represent user actions.
+6. **Limitations of Immutability:** There can be challenges with high-churn workloads, data fragmentation, and scenarios where data must be deleted due to regulatory requirements.
+7. **Event Time vs. Processing Time:** Be aware of the inconsistency between these two times due to delayed processing, which can lead to misinterpretation of data.
+8. **Handling Straggler Events:** Straggler events can be either ignored or incorporated by publishing a correction with an updated value for the window.
+9. **Assigning Timestamps:** Log the time when the event occurred, when it was sent, and when it was received by the server.
+10. **Stream Joins:** Understand the challenges of joining streams due to the continuous nature of the stream data.
+11. **Atomic Commit Facility:** An effective mechanism for managing both state changes and messaging within the stream processing framework.
+12. **Idempotence:** An operation is idempotent if it can be performed multiple times without changing the result beyond the initial application.
+13. **Rebuilding State after a Failure:** After a failure, the state can be recovered either by keeping the state in a remote datastore and replicating it, or by keeping the state local to the stream processor and replicating it periodically.
+14. **Log-based Message Broker vs. AMQP/JMS-style Message Broker:** Understanding the benefits of each can help choose the best one for your use case.
+15. **Fault Tolerance and Exactly-Once Semantics:** Techniques like microbatching, checkpointing, transactions, or idempotent writes can be employed to achieve fault tolerance in stream processing.
+
+# Cheatsheet: Chapter 12 - The Future of Data Systems of Designing Data-Intensive Applications
+
+## **A. Data Systems Design and Processing Techniques**
+
+### 1. **Data Integration**
+   - Selecting tools for solving data-related problems requires careful consideration of various trade-offs. A single tool may not fit all situations, necessitating the integration of different software components to provide the needed functionality.
+   - It's often necessary to synchronize an OLTP database with a full-text search index to handle varying access patterns. Establishing and maintaining data flows across the organization is crucial for this.
+
+### 2. **Batch & Stream Processing**
+   - Batch and stream processing are essential tools for data integration, ensuring data is in the right form in the right places.
+   - Outputs of batch and stream processes are derived datasets like search indexes, materialized views, recommendations, and aggregate metrics.
+   - Batch processing promotes deterministic, pure functions with no side effects, while stream processing allows managed, fault-tolerant state.
+
+### 3. **Unifying Batch and Stream Processing**
+   - Unifying batch and stream computations can improve flexibility and efficiency in handling data. Key features include replaying historical events, exactly-once semantics for stream processors, and windowing tools by event time.
+
+### 4. **Lambda Architecture**
+   - The lambda architecture proposes parallel execution of batch and stream processing systems. While the stream processor quickly provides an approximate update to the view, the batch processor produces a corrected version of the derived view later.
+
+### 5. **Dataflow & Event Ordering**
+   - In data systems, event ordering and causality are vital, especially when dependencies exist among events. In distributed systems, managing event order can be challenging due to scale and geographic distribution.
+   - For maintaining derived data consistency, techniques such as logical timestamps, unique identifiers for events, and conflict resolution algorithms can be employed.
+   - Understanding the "first write" principle and deciding a total order for data updates helps maintain consistency across different systems.  
+
+## **B. Data Management Techniques**
+
+### 1. **Unbundling Databases**
+   - Unbundling databases enables independent development, improvement, and maintenance of different components. It's compared to Unix's philosophy of providing low-level hardware abstraction.
+   - By unbundling and composing, good performance can be achieved across a wide range of workloads by combining several databases.
+
+### 2. **Application Code as Derivation Function & Separation of State**
+   - Transformation functions are crucial for deriving new datasets from existing ones. Creating derived datasets may often require custom application code.
+   - Stateless application logic should be kept separate from state management for more efficient development. 
+
+## **C. Future Directions for Data Systems**
+
+### 1. **The Future of Data Systems**
+   - Future trends predict a middle ground between distributed transactions and asynchronous log-based systems, emphasizing the use of log-based derived data.
+   - Unbundling databases and designing applications around dataflow could become significant patterns in future data systems.
+   - The use of modern stream processors for maintaining derived data through stable message ordering and fault-tolerant message processing could become more prevalent.
+
+## **D. Key Considerations and Challenges**
+
+### 1. **Considerations for Software Engineers**
+   - Consider the potential of unbundling databases and the benefits of a Unix shell-like high-level language for data system composition.
+   - Understand the benefits of designing applications around dataflow and the importance of transformation functions in deriving new datasets.
+   - Learn to use modern stream processors for maintaining derived data, and consider the potential of using stream operators in a dataflow system to build efficient applications.
+
+### 2. **Challenges in Distributed Systems**
+1. **Event Handling in Data Streams**: Event streams allow for better tracking of dependencies. Implementing stream-table joins for handling reads and writes can optimize tracking but may incur additional storage and I/O cost.
+
+2. **End-to-end Argument**: System functions often require an end-to-end approach to be fully implemented. TCP, database transactions, and stream processors alone can't prevent duplicates; unique identifiers or another end-to-end solution is necessary.
+
+3. **Multi-partition Data Processing**: Employ distributed execution of complex queries across several partitions using stream processor infrastructure. This can help in enforcing operations atomically while maintaining data integrity and consistency.
+
+4. **Integrity vs. Timeliness**: Prioritize data integrity over timeliness. While timeliness may be compromised in asynchronous event stream processing, integrity must be upheld using strategies like exactly-once semantics, fault-tolerant message delivery, and duplicate suppression.
+
+5. **Loosely Interpreted Constraints**: Traditional models of data checking can be restrictive. Adopt an approach where data is written optimistically, and constraints are checked after the fact.
+
+6. **Coordination-avoiding Data Systems**: For better performance and fault tolerance, consider using data systems that avoid synchronous cross-partition coordination. Temporary violations of loose constraints can be acceptable for many applications.
+
+7. **Trust, but Verify**: Regularly verify system model assumptions to prevent data corruption, particularly in areas often overlooked like data corruption at rest or in transit.
+
+8. **Data Corruption due to Software Bugs**: Prepare for potential software bugs that can lead to data corruption. Utilize database features correctly to maintain data integrity.
+
+9. **Enforcing Constraints**: In a distributed setting, enforcing uniqueness requires consensus. Explore options like log-based messaging systems or partitioned logs to enforce uniqueness and make deterministic decisions.
+
+10. **Fault-Tolerance Mechanisms**: Transactions may not be enough for fault tolerance in distributed systems. Consider exploring fault-tolerance abstractions that provide end-to-end correctness and maintain good performance.
+
+## **E. Data Integrity and Auditability**
+
+### 1. **Data Auditability and Integrity**
+   - Regularly verify and audit your data and backups for potential corruption.
+   - Use event-based systems for better data auditability; all user inputs should be represented as single, immutable events.
+   - Perform end-to-end integrity checks for all systems involved in the data pipeline to avoid unnoticed corruption.
+   - Utilize cryptographic tools and technologies like blockchain to robustly prove the integrity of your system.
+
+## **F. Ethical Considerations and Responsibility**
+
+### 1. **Ethical Responsibility**
+   - Understand the potential consequences and implications of your systems, especially when dealing with people-related datasets.
+   - Always weigh in privacy and potential negative effects when designing and implementing systems.
+
+### 2. **Predictive Analytics and Bias**
+   - Be aware of the impact and consequences of data analysis, and avoid situations like algorithmic imprisonment.
+   - Address potential bias in predictive analytics systems that can lead to unfair and discriminatory decisions.
+
+### 3. **Accountability and Transparency**
+   - Ensure that accountability is clearly established in data-driven decision-making processes.
+   - Work towards making complex machine learning algorithms transparent and comprehensible.
+
+### 4. **Data Usage and Privacy**
+   - Use data analytics responsibly and avoid over-reliance on data without questioning its validity.
+   - Always balance the interests of data-collecting organizations and the people being tracked.
+   - Maintain user privacy and give users clear understanding and control over their data.
+
+### 5. **Dealing with Data**
+   - Treat data not just as an asset but also as a responsibility. 
+   - Consider future implications when collecting data today.
+   - Support and adhere to data protection laws and self-regulation within the company.
+   - Maintain transparency with users about their data usage.
+
+### 6. **Ethical Considerations**
+   - Recognize the ethical responsibilities in building data-intensive applications.
+   - Encourage a culture shift in the tech industry towards respecting users as individuals with control over their data.
+   - Purge data as soon as it's no longer needed and use cryptographic protocols for data access control. 
+
+Always remember that as software engineers, we carry a responsibility to work toward a world that's not just technically efficient, but also ethical and just. We need to understand the possible harms of data misuse and work towards preventing them.
+
