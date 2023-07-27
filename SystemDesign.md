@@ -16,9 +16,9 @@
 - [Global Logging Service](#global-logging-service)
 - [Web Analytics](#web-analytics)
 - [Gmail](#gmail)
-- [Bit.ly](#bit.ly)
+- [Bit.ly](#bitly)
 - [API Rate Limiter](#api-rate-limiter)
-- [Content Delivery Network](content-delivery-network-(cdn))
+- [Content Delivery Network](#content-delivery-network-cdn)
 
 ## Twitter
 
