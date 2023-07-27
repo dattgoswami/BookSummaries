@@ -471,7 +471,7 @@ Trade-offs:
 - Full-text indexing provides fast search results but requires additional storage and processing power.
 - Spam filtering and virus scanning are critical for user safety but can delay email delivery and may occasionally filter out legitimate emails (false positives).
 
-## Bit.ly
+## Bitly
 
 Designing a URL shortening service like bit.ly involves several important considerations, such as unique short URL generation, data storage, high throughput, and URL redirection. Here is a potential design and the trade-offs involved:
 
