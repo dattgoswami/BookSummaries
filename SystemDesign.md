@@ -4,6 +4,7 @@
 
 - [Twitter](#twitter)
 - [Uber](#uber)
+- [Distributed Caching System](#distributed-caching-system)
 
 ## Twitter
 
@@ -54,6 +55,7 @@ Designing a real-time ride-sharing system like Uber is a challenging task due to
 The trade-offs with this design primarily relate to cost and complexity. Building a real-time system that can handle millions of users concurrently is a complex task and requires a robust infrastructure, which can be expensive. There is also a trade-off between accuracy and system load when tracking locations - more frequent updates mean better accuracy but more load on the system. Furthermore, using third-party APIs, like Google's Distance Matrix API, may introduce costs and dependencies.
 
 Finally, the choice of technologies and architecture will highly depend on the specific requirements and constraints of the project, as well as the team's familiarity and expertise with the technologies.
+
 ---
 ### Uber Real-time Ride-matching System
 
@@ -138,6 +140,7 @@ Deploying the various components of your fault-tolerant, scalable, and highly av
 To integrate DevOps practices, AWS provides services like AWS CodePipeline for CI/CD, AWS CodeBuild for build, and AWS CodeDeploy for deployment. For containerized applications, AWS also offers AWS CodeStar.
 
 Implement best practices like regular health checks (with Amazon Route53), timeouts, logging (with AWS CloudWatch), alerting (with Amazon SNS), and having a good incident response plan. Also, consider using AWS Fault Injection Simulator for chaos engineering experiments.
+
 ---
 ## Distributed Caching System
 
