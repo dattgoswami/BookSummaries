@@ -16,7 +16,7 @@
 - [Global Logging Service](#global-logging-service)
 - [Web Analytics](#web-analytics)
 - [Gmail](#gmail)
-- [Bit.ly](#bitly)
+- [Bitly](#bitly)
 - [API Rate Limiter](#api-rate-limiter)
 - [Content Delivery Network](#content-delivery-network-cdn)
 
