@@ -5,6 +5,20 @@
 - [Twitter](#twitter)
 - [Uber](#uber)
 - [Distributed Caching System](#distributed-caching-system)
+- [Fastly](#fastly)
+- [Twilio](#twilio)
+- [Instagram](#instagram)
+- [Google](#google)
+- [Perplexity](#perplexity)
+- [Google Docs](#google-docs)
+- [Google Sheets](#google-sheets)
+- [Real-Time Advertising System](#real-time-advertising-system)
+- [Global Logging Service](#global-logging-service)
+- [Web Analytics](#web-analytics)
+- [Gmail](#gmail)
+- [Bit.ly](#bit.ly)
+- [API Rate Limiter](#api-rate-limiter)
+- [Content Delivery Network](content-delivery-network-(cdn))
 
 ## Twitter
 
