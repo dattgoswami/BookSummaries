@@ -312,7 +312,7 @@ This chapter explores the trade-offs in microservices design and the importance 
 6. Use correlation IDs to track user requests and understand the flow of calls.
 7. Use monitoring to gain insights into system performance, plan capacity, troubleshoot issues, and understand user experience.
 
-# Building Microservices: Chapter 9 - Security Cheatsheet & Key Takeaways:
+# Building Microservices: Chapter 9 - Security 
 
 **1. Shared Secret Communication:**
    - Implement a secure protocol for sharing secrets or keys for authentication.
