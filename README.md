@@ -34,3 +34,4 @@ I am currently reading the following books, and will post cheatsheets for them h
 30. Deep Learning with Python
 31. Deep Learning with PyTorch
 32. Deep Learning
+33. AWS Fundamentals
