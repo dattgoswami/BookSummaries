@@ -35,3 +35,5 @@ I am currently reading the following books, and will post cheatsheets for them h
 31. Deep Learning with PyTorch
 32. Deep Learning
 33. AWS Fundamentals
+34. Speech and Language Processing
+35. Natural Language Processing
